@@ -87,6 +87,15 @@ apt install stockfish         # Debian/Ubuntu
 
 or download a build from [stockfishchess.org/download](https://stockfishchess.org/download).
 
+Lint with:
+
+```
+bundle exec rubocop
+```
+
+CI (`.github/workflows/ci.yml`) runs both the test suite and RuboCop on
+every push and pull request.
+
 Run `bin/console` for an interactive prompt with the gem already loaded.
 
 To install this gem onto your local machine, run `bundle exec rake

@@ -3,8 +3,8 @@ require_relative 'lib/stockshark/version'
 Gem::Specification.new do |spec|
   spec.name = 'stockshark'
   spec.version = Stockshark::VERSION
-  spec.authors = ['Phil Brockwell']
-  spec.email = ['phil@trueflux.agency']
+  spec.authors = [ 'Phil Brockwell' ]
+  spec.email = [ 'phil@trueflux.agency' ]
 
   spec.summary = 'A small, dependency-free Ruby wrapper for talking to a UCI chess engine.'
   spec.description = <<~DESC
@@ -24,5 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.files = Dir.chdir(__dir__) { `git ls-files -z`.split("\x0") }
                   .reject { |f| f.match(%r{\A(?:test|spec|features)/}) }
-  spec.require_paths = ['lib']
+  spec.require_paths = [ 'lib' ]
 end
