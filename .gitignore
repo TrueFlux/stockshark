@@ -1,0 +1,6 @@
+/.bundle/
+/Gemfile.lock
+/pkg/
+/spec/reports/
+/spec/examples.txt
+*.gem
