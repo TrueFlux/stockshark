@@ -122,6 +122,18 @@ describe Stockshark::Engine do
       end
     end
 
+    context "with a position that has no legal moves (checkmate/stalemate)" do
+      let(:analyze_lines) { [ line("info depth 0 score mate 0"), line("bestmove (none)") ] }
+
+      it "still returns one line, built from the pv-less terminal score" do
+        result = engine.analyze(fen: "checkmated position", depth: 18)
+
+        expect(result.best_move).to eq("(none)")
+        expect(result.lines.size).to eq(1)
+        expect(result.lines.first).to have_attributes(multipv: 1, score_cp: nil, score_mate: 0, pv: [])
+      end
+    end
+
     it "requires either a depth or a movetime" do
       bare_process = FakeProcess.new(lines: [ line("id name Stockfish 16"), line("uciok"), line("readyok") ])
       bare_engine = build_engine(bare_process)

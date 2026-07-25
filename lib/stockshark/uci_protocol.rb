@@ -31,22 +31,27 @@ module Stockshark
     #   => { depth: 20, multipv: 1, score_cp: 34, score_mate: nil, pv: ["e2e4", "e7e5", "g1f3"] }
     # "info depth 12 multipv 2 score mate -3 pv ... "
     #   => { depth: 12, multipv: 2, score_cp: nil, score_mate: -3, pv: [...] }
-    # Returns nil for info lines that don't carry a scored principal
-    # variation (plain "info string ..." diagnostics, "info currmove ...",
-    # etc.) — callers should just skip those.
+    # "info depth 0 score mate 0" (position has no legal moves — checkmate;
+    # stalemate reports "score cp 0" instead — neither carries a pv, since
+    # there's no move to report)
+    #   => { depth: 0, multipv: 1, score_cp: nil, score_mate: 0, pv: [] }
+    # Returns nil for info lines that don't carry a score at all (plain
+    # "info string ..." diagnostics, "info currmove ...", etc.) — callers
+    # should just skip those.
     def parse_info(line)
-      return nil unless line.start_with?("info ") && line.include?(" pv ")
+      return nil unless line.start_with?("info ") && line.match?(/\bscore (?:cp|mate) -?\d+/)
 
       depth = line[/\bdepth (\d+)/, 1]
+      return nil unless depth
+
       pv = line[/ pv (.+)\z/, 1]
-      return nil unless depth && pv
 
       {
         depth: depth.to_i,
         multipv: (line[/\bmultipv (\d+)/, 1] || "1").to_i,
         score_cp: line[/\bscore cp (-?\d+)/, 1]&.to_i,
         score_mate: line[/\bscore mate (-?\d+)/, 1]&.to_i,
-        pv: pv.split(" ")
+        pv: pv ? pv.split(" ") : []
       }
     end
   end

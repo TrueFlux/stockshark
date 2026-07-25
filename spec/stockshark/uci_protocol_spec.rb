@@ -50,12 +50,24 @@ describe Stockshark::UciProtocol do
       expect(described_class.parse_info(line)[:multipv]).to eq(1)
     end
 
-    it "returns nil for a line with no principal variation" do
+    it "returns nil for a line with no score at all" do
       expect(described_class.parse_info("info string NNUE evaluation enabled")).to be_nil
     end
 
     it "returns nil for a currmove progress line" do
       expect(described_class.parse_info("info currmove e2e4 currmovenumber 1")).to be_nil
+    end
+
+    it "parses a checkmate position's score line, which carries no pv" do
+      expect(described_class.parse_info("info depth 0 score mate 0")).to eq(
+        depth: 0, multipv: 1, score_cp: nil, score_mate: 0, pv: []
+      )
+    end
+
+    it "parses a stalemate position's score line, which also carries no pv" do
+      expect(described_class.parse_info("info depth 0 score cp 0")).to eq(
+        depth: 0, multipv: 1, score_cp: 0, score_mate: nil, pv: []
+      )
     end
   end
 end
